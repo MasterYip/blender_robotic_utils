@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+from urdf_parser_py.urdf import URDF, Joint, Link, Visual
+from mathutils import Euler, Vector
+from bpy.types import Armature, BlendData, Bone, Camera, Image, Light, Material, Mesh, Object
 import os
 from shutil import copy
 from typing import Dict, List, Tuple, Union
@@ -17,9 +20,6 @@ try:
     ROS_PKG_VERSIONS.append(2)
 except:
     pass
-from bpy.types import Armature, BlendData, Bone, Camera, Image, Light, Material, Mesh, Object
-from mathutils import Euler, Vector
-from urdf_parser_py.urdf import URDF, Joint, Link, Visual
 
 TMP_FOLDER_PATH = "texture/"
 TMP_TEXTURE_PATH = TMP_FOLDER_PATH
@@ -331,6 +331,18 @@ class RobotBuilder:
             rename_materials(self.robot.name)
         clean_up()
 
+    def _get_pkg_path_from_filename(self, filename: str) -> str:
+        # try search for ros package root directory given the file path
+        print('urdf_file_path:', filename)
+        pkg_root = None
+        while filename != "/":
+            filename = os.path.dirname(filename)
+            if os.path.isfile(filename + "/" + "package.xml"):
+                pkg_root = filename
+                break
+        if pkg_root is not None:
+            return pkg_root
+
     def build_robot(self) -> None:
         clear_data(bpy.data, self.scale_unit)
         self.create_materials()
@@ -361,13 +373,18 @@ class RobotBuilder:
                         rel_path: str = visual.geometry.filename
                         while os.path.dirname(rel_path) != "package:":
                             rel_path = os.path.dirname(rel_path)
-                        pkg_path = get_from_ros_pkg(rel_path)
-                        abs_path = os.path.dirname(pkg_path) + visual.geometry.filename.replace("package://", "/")
+                        try:
+                            pkg_path = get_from_ros_pkg(rel_path)
+                            abs_path = os.path.dirname(pkg_path) + visual.geometry.filename.replace("package://", "/")
+                        except Exception as e:
+                            pkg_path = self._get_pkg_path_from_filename(self.file_path)
+                            abs_path = pkg_path + visual.geometry.filename.replace(rel_path, "/")
                     else:
                         if visual.geometry.filename.startswith("file:///"):
                             abs_path = visual.geometry.filename.replace("file://", "")
                         elif visual.geometry.filename.startswith("file://"):
-                            abs_path = os.path.join(os.path.dirname(self.file_path), visual.geometry.filename.replace("file://", ""))
+                            abs_path = os.path.join(os.path.dirname(self.file_path),
+                                                    visual.geometry.filename.replace("file://", ""))
                         else:
                             raise NotImplementedError("File path " + rel_path + " is not supported")
                     print(abs_path)
@@ -403,7 +420,8 @@ class RobotBuilder:
             elif file_path[0] == "cube":
                 bpy.ops.mesh.primitive_cube_add(size=1 / self.scale_unit, scale=file_path[1])
             elif file_path[0] == "sphere":
-                bpy.ops.mesh.primitive_uv_sphere_add(radius=file_path[1], scale=(1 / self.scale_unit, 1 / self.scale_unit, 1 / self.scale_unit))
+                bpy.ops.mesh.primitive_uv_sphere_add(radius=file_path[1], scale=(
+                    1 / self.scale_unit, 1 / self.scale_unit, 1 / self.scale_unit))
             else:
                 print("Object type", file_path[0], "is not supported")
                 return None
