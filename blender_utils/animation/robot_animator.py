@@ -3,15 +3,17 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-24 16:02:29
+LastEditTime: 2025-01-24 16:29:23
 LastEditors: MasterYip
 '''
 
 import os
+from shlex import join
 import yaml
 import bpy
 import mathutils
 import math
+import csv
 
 # Directory Management
 try:
@@ -21,10 +23,25 @@ except:
     # Run in ipykernel & interactive
     ROOT_DIR = os.getcwd()
 
-# Config Class
+# def csv2dict(filename):
+#     # ignore spaces
+#     df = pd.read_csv(filename, sep=",", skipinitialspace=True)
+#     return df.to_dict(orient="list")
+
+
+def read_csv_joint_states(filename):
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        joint_states = list(reader)[1:]
+        times = [float(row[0]) for row in joint_states]
+        joint_states = [row[1:] for row in joint_states]
+        # convert to float degree
+        return times, [[math.degrees(float(i)) for i in row] for row in joint_states]
 
 
 class RobotAnimatorConfig(dict):
+    """Config Class"""
+
     def __init__(self, yaml_path):
         with open(yaml_path, 'r') as file:
             prime_service = yaml.safe_load(file)
@@ -72,11 +89,19 @@ class RobotAnimator(object):
                     # 将新旋转应用到总的四元数上
                     total_rotation_quat = total_rotation_quat @ rotation_quat
             joint.rotation_quaternion = total_rotation_quat
+            joint.keyframe_insert(data_path="rotation_quaternion", frame=frame)
             # joint.location = new_location
             # joint.scale = new_scale
-            joint.keyframe_insert(data_path="rotation_quaternion", frame=frame)
             # pose_bone.keyframe_insert(data_path="location", frame=frame)
             # pose_bone.keyframe_insert(data_path="scale", frame=frame)
+
+    def load_animation(self, joint_states_file):
+        times, joint_states = read_csv_joint_states(joint_states_file)
+        for time, state in zip(times, joint_states):
+            frame = int(time * self.config['frame_rate'])
+            self.set_keyframe(frame, state)
+            pass
+
 
 if __name__ == "<run_path>":
 
@@ -84,9 +109,8 @@ if __name__ == "<run_path>":
     config = RobotAnimatorConfig(os.path.join(ROOT_DIR, 'robot_animator_cfg.yaml'))
     animator = RobotAnimator(config)
 
-    joint_states = [[i for _ in range(18)] for i in range(40)]
+    # Load joint states
+    file = os.path.join(ROOT_DIR, 'joint_states.csv')
 
-    # Set keyframes
-    animator.set_keyframe(10, joint_states[0])
-    animator.set_keyframe(50, joint_states[-1])
+    animator.load_animation(file)
     print("Keyframes set successfully.")
