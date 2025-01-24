@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-24 16:32:58
+LastEditTime: 2025-01-24 22:07:03
 LastEditors: MasterYip
 '''
 
@@ -32,11 +32,14 @@ except:
 def read_csv_joint_states(filename):
     with open(filename, 'r') as f:
         reader = csv.reader(f)
-        joint_states = list(reader)[1:]
-        times = [float(row[0]) for row in joint_states]
-        joint_states = [row[1:] for row in joint_states]
-        # convert to float degree
-        return times, [[math.degrees(float(i)) for i in row] for row in joint_states]
+        q = list(reader)[1:]
+        times = [float(row[0]) for row in q]
+        q = [row[1:] for row in q]
+        if len(q[0]) == 18:
+            # convert to float degree
+            return times, [[math.degrees(float(i)) for i in row] for row in q]
+        elif len(q[0]) == 24:
+            return times, [[math.degrees(float(i)) if idx > 5 else float(i)*100 for idx, i in enumerate(row)] for row in q]
 
 
 class RobotAnimatorConfig(dict):
@@ -59,8 +62,8 @@ class RobotAnimator(object):
             print(f"未找到骨架对象 '{self.config['armature_name']}' 或对象类型不是骨架。")
 
         # 获取骨架的动作数据
-        action = self.armature.animation_data.action
-        if action is None:
+        self.action = self.armature.animation_data.action
+        if self.action is None:
             print("骨架没有动作数据。")
 
         # 获取特定骨骼的姿势对象
@@ -71,7 +74,15 @@ class RobotAnimator(object):
                 print(f"在骨架中未找到名为 '{joint_name}' 的骨骼。")
             self.joints.append(pose_bone)
 
-    def set_keyframe(self, frame, joint_states):
+    def set_interp_type(self, type='CONSTANT'):
+        # FIXME: TypeError: couldn't access the py sequence
+        # 设置关键帧的插值模式为'CONSTANT'
+        for fcurve in self.action.fcurves:
+            # if fcurve.data_path.startswith(f"pose.bones['{bone_name}']"):
+            if fcurve.data_path.startswith("pose.bones"):
+                fcurve.keyframe_points.foreach_set("interpolation", type)
+
+    def set_joint_keyframe(self, frame, joint_states):
         for joint, state in zip(self.joints, joint_states):
             # Euler
             # state = [0, 0, state]
@@ -95,11 +106,24 @@ class RobotAnimator(object):
             # pose_bone.keyframe_insert(data_path="location", frame=frame)
             # pose_bone.keyframe_insert(data_path="scale", frame=frame)
 
+    def set_pose_keyframe(self, frame, pose):
+        # pose:[x,y,z,r,p,y]
+        # set root pose keyframe
+        self.armature.location = pose[:3]
+        self.armature.rotation_euler = pose[3:]
+        self.armature.keyframe_insert(data_path="location", frame=frame)
+
     def load_animation(self, joint_states_file):
         times, joint_states = read_csv_joint_states(joint_states_file)
-        for time, state in zip(times, joint_states):
-            frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
-            self.set_keyframe(frame, state)
+        if len(joint_states[0]) == 18:
+            for time, state in zip(times, joint_states):
+                frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
+                self.set_joint_keyframe(frame, state)
+        elif len(joint_states[0]) == 24:
+            for time, state in zip(times, joint_states):
+                frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
+                self.set_joint_keyframe(frame, state[6:])
+                self.set_pose_keyframe(frame, state[:6])
 
 
 if __name__ == "<run_path>":
