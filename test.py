@@ -2,8 +2,8 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 10:19:39
 Description: file content
-FilePath: /blender_learning/test.py
-LastEditTime: 2024-03-11 12:36:59
+FilePath: /blender_utils/test.py
+LastEditTime: 2024-03-11 14:33:09
 LastEditors: MasterYip
 '''
 import os
@@ -20,7 +20,18 @@ if ROOT_DIR not in sys.path:
 
 # ================================================================
 import bpy
+import numpy as np
+from blender_utils.modeling.gridmap_gen import gridmap_gen
 from blender_utils.scene_creator.gcs_path_search import GCSPathSearch_Scene
 
+points = [[-1.5, 0, 0], [0, 0, 1.5], [1.5, 0, 0.7]]
+resolution = (40, 40)
+bound = (-3, 3, -3, 3)
+
 scene = GCSPathSearch_Scene(bpy)
-scene.setup()
+# scene.setup()
+scene.create_guide_surf(
+    points, bound=bound, resolution=resolution)
+
+
+# gridmap_gen(bpy, "Ground", h_mat, bound)
