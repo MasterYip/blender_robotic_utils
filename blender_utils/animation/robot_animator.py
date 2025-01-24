@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-24 16:29:23
+LastEditTime: 2025-01-24 16:32:58
 LastEditors: MasterYip
 '''
 
@@ -98,9 +98,8 @@ class RobotAnimator(object):
     def load_animation(self, joint_states_file):
         times, joint_states = read_csv_joint_states(joint_states_file)
         for time, state in zip(times, joint_states):
-            frame = int(time * self.config['frame_rate'])
+            frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
             self.set_keyframe(frame, state)
-            pass
 
 
 if __name__ == "<run_path>":
