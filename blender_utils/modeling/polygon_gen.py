@@ -2,8 +2,8 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 11:18:56
 Description: file content
-FilePath: /blender_learning/blender_utils/modeling/polygon_gen.py
-LastEditTime: 2024-03-11 13:02:04
+FilePath: /blender_utils/blender_utils/modeling/polygon_gen.py
+LastEditTime: 2025-01-26 15:44:01
 LastEditors: MasterYip
 '''
 
@@ -44,7 +44,10 @@ def ellipsoid_gen(bpy, name="Ellipsoid", axes=(1.0, 1.0, 1.0), segments=32, pos=
             bm.faces.new(bm.verts[v1:v1+1] + bm.verts[v2:v2+1] +
                          bm.verts[v3:v3+1] + bm.verts[v4:v4+1])
 
-
     # 更新网格
     bm.to_mesh(mesh)
     bm.free()
+
+
+def gen_sphere(bpy, rad=1.0, pos=(0,0,0)):
+    pass

@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-24 22:07:03
+LastEditTime: 2025-01-26 15:22:31
 LastEditors: MasterYip
 '''
 
@@ -39,6 +39,7 @@ def read_csv_joint_states(filename):
             # convert to float degree
             return times, [[math.degrees(float(i)) for i in row] for row in q]
         elif len(q[0]) == 24:
+            # FIXME: Data unit conversion
             return times, [[math.degrees(float(i)) if idx > 5 else float(i)*100 for idx, i in enumerate(row)] for row in q]
 
 

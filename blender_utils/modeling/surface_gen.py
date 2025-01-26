@@ -1,3 +1,13 @@
+'''
+Author: MasterYip 2205929492@qq.com
+Date: 2024-03-11 10:36:36
+Description: Generate surface with border points
+FilePath: /blender_utils/blender_utils/modeling/surface_gen.py
+LastEditTime: 2025-01-26 21:29:03
+LastEditors: MasterYip
+'''
+
+
 # context.area: VIEW_3D
 import bpy
 import math

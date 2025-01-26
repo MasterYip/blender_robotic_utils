@@ -2,12 +2,25 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 10:26:37
 Description: file content
-FilePath: /blender_learning/modeling/gridmap_gen.py
-LastEditTime: 2024-03-11 10:44:52
+FilePath: /blender_utils/blender_utils/modeling/gridmap_gen.py
+LastEditTime: 2025-01-26 21:51:36
 LastEditors: MasterYip
 '''
 
 import math
+
+from numpy import size
+import bpy
+import cv2
+import os
+
+# Directory Management
+try:
+    # Run in Terminal
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+except:
+    # Run in ipykernel & interactive
+    ROOT_DIR = os.getcwd()
 
 
 def gridmap_gen(bpy_nh, name, heights, bound=(-1, 1, -1, 1)):
@@ -77,16 +90,46 @@ def gridmap_gen_function(bpy_nh, name, height_func, resolution: tuple = (10, 10)
     bpy_nh.context.collection.objects.link(obj)
 
 
-if __name__ == "__main__":
+def img2heightmat(img_path, height_bound=(0, 1)):
+    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    heights = []
+    for i in range(img.shape[0]):
+        heights.append([])
+        for j in range(img.shape[1]):
+            heights[i].append(
+                height_bound[0] + (height_bound[1] - height_bound[0]) * img[i, j] / 255)
+    return heights
+
+
+def gridmap_gen_from_img(bpy_nh, name, img_path, position=(0, 0),
+                         resolution=0.05, height_bound=(0, 1)):
+    heights = img2heightmat(img_path, height_bound)
+    size_x = len(heights)
+    size_y = len(heights[0])
+    # centering
+    bounds = (
+        position[0] - resolution * size_x / 2,
+        position[0] + resolution * size_x / 2,
+        position[1] - resolution * size_y / 2,
+        position[1] + resolution * size_y / 2
+    )
+    gridmap_gen(bpy_nh, name, heights, bounds)
+
+
+if __name__ == "<run_path>":
     # 示例用法
     grid_length = 5
     grid_width = 5
-    heights = [
-        [0.0, 0.1, 0.2, 0.3, 0.4],
-        [0.1, 0.2, 0.3, 0.4, 0.5],
-        [0.2, 0.3, 0.4, 0.5, 0.6],
-        [0.3, 0.4, 0.5, 0.6, 0.7],
-        [0.4, 0.5, 0.6, 0.7, 0.8]
-    ]
-
-    gridmap_gen(heights)
+    # heights = [
+    #     [0.0, 0.1, 0.2, 0.3, 0.4],
+    #     [0.1, 0.2, 0.3, 0.4, 0.5],
+    #     [0.2, 0.3, 0.4, 0.5, 0.6],
+    #     [0.3, 0.4, 0.5, 0.6, 0.7],
+    #     [0.4, 0.5, 0.6, 0.7, 0.8]
+    # ]
+    # heights = img2heightmat(os.path.join(ROOT_DIR, "eg_data", "terrain_ground.png"), (0, 1))
+    # gridmap_gen(bpy, "test_grid", heights)
+    
+    gridmap_gen_from_img(bpy, "test_grid",
+                         os.path.join(ROOT_DIR, "eg_data", "terrain_ground.png"),
+                         (0, 0), 0.05, (0, 1))

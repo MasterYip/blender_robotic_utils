@@ -1,5 +1,13 @@
 # blender_utils
 
+## pkg blender_utils
+
+### Installation
+
+```bash
+pip install -e ./
+```
+
 ## [urdf_importer](https://github.com/HoangGiang93/urdf_importer)
 
 ### Installation

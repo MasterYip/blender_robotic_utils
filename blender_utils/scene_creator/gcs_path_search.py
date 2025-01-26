@@ -6,9 +6,9 @@ FilePath: /blender_learning/blender_utils/scene_creator/gcs_path_search.py
 LastEditTime: 2024-03-11 12:57:48
 LastEditors: MasterYip
 '''
-
-from ..modeling.gridmap_gen import gridmap_gen_function, gridmap_gen
-from ..modeling.polygon_gen import ellipsoid_gen
+import bpy
+from blender_utils.modeling.gridmap_gen import gridmap_gen_function, gridmap_gen
+from blender_utils.modeling.polygon_gen import ellipsoid_gen
 import numpy as np
 
 
@@ -79,3 +79,15 @@ class GCSPathSearch_Scene:
                 y = bound[2] + (bound[3]-bound[2])*j/resolution[1]
                 h_mat[i, j] = guide_surf.get_height(np.array([x, y]))
         gridmap_gen(self.bpy, "GuideSurf", h_mat, bound)
+
+
+if __name__ == "<run_path>":
+
+    points = [[-1.5, 0, 0], [0, 0, 1.5], [1.5, 0, 0.7]]
+    resolution = (40, 40)
+    bound = (-3, 3, -3, 3)
+
+    scene = GCSPathSearch_Scene(bpy)
+    # scene.setup()
+    scene.create_guide_surf(
+        points, bound=bound, resolution=resolution)
