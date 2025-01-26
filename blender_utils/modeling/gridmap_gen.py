@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 10:26:37
 Description: file content
 FilePath: /blender_utils/blender_utils/modeling/gridmap_gen.py
-LastEditTime: 2025-01-26 21:51:36
+LastEditTime: 2025-01-26 22:37:55
 LastEditors: MasterYip
 '''
 
@@ -41,10 +41,16 @@ def gridmap_gen(bpy_nh, name, heights, bound=(-1, 1, -1, 1)):
     faces = []
     for i in range(resolution_x - 1):
         for j in range(resolution_y - 1):
+            # Normal inverted:
+            # v1 = i * resolution_y + j
+            # v2 = v1 + 1
+            # v3 = v1 + resolution_y + 1
+            # v4 = v1 + resolution_y
+            # Normal
             v1 = i * resolution_y + j
-            v2 = v1 + 1
+            v2 = v1 + resolution_y
             v3 = v1 + resolution_y + 1
-            v4 = v1 + resolution_y
+            v4 = v1 + 1
             faces.append((v1, v2, v3, v4))
 
     # 创建网格对象并添加网格数据
@@ -129,7 +135,7 @@ if __name__ == "<run_path>":
     # ]
     # heights = img2heightmat(os.path.join(ROOT_DIR, "eg_data", "terrain_ground.png"), (0, 1))
     # gridmap_gen(bpy, "test_grid", heights)
-    
+
     gridmap_gen_from_img(bpy, "test_grid",
                          os.path.join(ROOT_DIR, "eg_data", "terrain_ground.png"),
                          (0, 0), 0.05, (0, 1))
