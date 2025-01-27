@@ -375,10 +375,13 @@ class RobotBuilder:
                             rel_path = os.path.dirname(rel_path)
                         try:
                             pkg_path = get_from_ros_pkg(rel_path)
-                            abs_path = os.path.dirname(pkg_path) + visual.geometry.filename.replace("package://", "/")
+                            # abs_path = os.path.dirname(pkg_path) + visual.geometry.filename.replace("package://", "/")
                         except Exception as e:
+                            print("Warning: ", e)
+                            print("Trying to get package path from filename...")
                             pkg_path = self._get_pkg_path_from_filename(self.file_path)
-                            abs_path = pkg_path + visual.geometry.filename.replace(rel_path, "/")
+                        # Use pkg path name instead of pkg name
+                        abs_path = pkg_path + visual.geometry.filename.replace(rel_path, "/")
                     else:
                         if visual.geometry.filename.startswith("file:///"):
                             abs_path = visual.geometry.filename.replace("file://", "")
@@ -387,7 +390,6 @@ class RobotBuilder:
                                                     visual.geometry.filename.replace("file://", ""))
                         else:
                             raise NotImplementedError("File path " + rel_path + " is not supported")
-                    print(abs_path)
                     if not os.path.exists(abs_path):
                         raise FileNotFoundError("File " + abs_path + " does not exist")
                     visual.geometry.filename = abs_path
@@ -412,6 +414,7 @@ class RobotBuilder:
         link_pos=Vector(),
         link_rot=Euler(),
     ) -> Object:
+        # Creat Target Object
         if isinstance(file_path, list):
             if file_path[0] == "cylinder":
                 bpy.ops.mesh.primitive_cylinder_add(
@@ -432,11 +435,11 @@ class RobotBuilder:
                 if material is None:
                     material = bpy.data.materials.new(name="Material")
             object.data.materials.append(material)
-
         elif file_path:
             file_ext = os.path.splitext(file_path)[1].lower()
             if file_ext == ".dae":
-                (file_path, _) = fix_up_axis_and_get_materials(file_path, self.unique_name)
+                # FIXME: comment out temporarily
+                # (file_path, _) = fix_up_axis_and_get_materials(file_path, self.unique_name)
                 bpy.ops.wm.collada_import(filepath=file_path)
             elif file_ext == ".obj":
                 if "obj_import" in dir(bpy.ops.wm):
@@ -454,21 +457,26 @@ class RobotBuilder:
                 else:
                     print("STL import is not supported")
                     return None
-
             else:
                 print("File extension", file_ext, "of", file_path, "is not supported")
                 return None
+
+            # Remove Cam & Lights
             camera: Camera
             for camera in bpy.data.cameras:
                 bpy.data.cameras.remove(camera)
             light: Light
             for light in bpy.data.lights:
                 bpy.data.lights.remove(light)
+            
             bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
             if len(bpy.context.selected_objects) > 1:
                 bpy.ops.object.join()
+            # Create UV for those don't have
             if not bpy.context.object.data.uv_layers:
                 bpy.ops.mesh.uv_texture_add()
+                
+            # Mesh Object
             object = bpy.context.object
             if self.apply_weld:
                 object.modifiers.new("Weld", "WELD")
@@ -487,6 +495,7 @@ class RobotBuilder:
             object = bpy.data.objects.new(mesh_name, mesh)
             bpy.context.scene.collection.objects.link(object)
 
+        # Object Transform
         object.name = mesh_name
         object.rotation_mode = "XYZ"
         object.rotation_euler.rotate(rotation)
