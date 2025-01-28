@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-28 08:49:17
+LastEditTime: 2025-01-28 22:36:04
 LastEditors: MasterYip
 '''
 
