@@ -333,7 +333,6 @@ class RobotBuilder:
 
     def _get_pkg_path_from_filename(self, filename: str) -> str:
         # try search for ros package root directory given the file path
-        print('urdf_file_path:', filename)
         pkg_root = None
         while filename != "/":
             filename = os.path.dirname(filename)

@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 10:19:39
 Description: file content
 FilePath: /blender_utils/test.py
-LastEditTime: 2025-01-26 15:40:17
+LastEditTime: 2025-01-27 11:35:04
 LastEditors: MasterYip
 '''
 import os
@@ -28,10 +28,12 @@ points = [[-1.5, 0, 0], [0, 0, 1.5], [1.5, 0, 0.7]]
 resolution = (40, 40)
 bound = (-3, 3, -3, 3)
 
-scene = GCSPathSearch_Scene(bpy)
-# scene.setup()
-scene.create_guide_surf(
-    points, bound=bound, resolution=resolution)
+# scene = GCSPathSearch_Scene(bpy)
+# # scene.setup()
+# scene.create_guide_surf(
+#     points, bound=bound, resolution=resolution)
 
 
 # gridmap_gen(bpy, "Ground", h_mat, bound)
+
+bpy.ops.wm.collada_import(filepath="E:\\CodeTestFile\\Github-HITSME_HexLab\\Hexapod-robot-assets\\model\\elspider_air\\meshes\\BASE.dae")

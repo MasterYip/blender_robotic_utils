@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-26 21:53:13
 Description: file content
 FilePath: /blender_utils/blender_utils/scene_creator/elspider_air_walking.py
-LastEditTime: 2025-01-26 22:17:15
+LastEditTime: 2025-01-27 20:48:15
 LastEditors: MasterYip
 '''
 
@@ -49,7 +49,7 @@ class ElSpiderWalkingScene(object):
             self.gridmap_config.update(prime_service)
 
         # Load terrains
-        self.load_terrains()
+        self.load_terrains(False)
 
     def load_terrains(self, with_ceiling=True):
         scaling = 100
