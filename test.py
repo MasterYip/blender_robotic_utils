@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 10:19:39
 Description: file content
 FilePath: /blender_utils/test.py
-LastEditTime: 2025-01-27 11:35:04
+LastEditTime: 2025-01-28 21:10:03
 LastEditors: MasterYip
 '''
 import os
@@ -36,4 +36,13 @@ bound = (-3, 3, -3, 3)
 
 # gridmap_gen(bpy, "Ground", h_mat, bound)
 
-bpy.ops.wm.collada_import(filepath="E:\\CodeTestFile\\Github-HITSME_HexLab\\Hexapod-robot-assets\\model\\elspider_air\\meshes\\BASE.dae")
+# bpy.ops.wm.collada_import(filepath="E:\\CodeTestFile\\Github-HITSME_HexLab\\Hexapod-robot-assets\\model\\elspider_air\\meshes\\BASE.dae")
+
+
+# print all objects
+# for obj in bpy.data.objects:
+#     print(obj.name)
+
+# print all scene names in a list
+for obj in bpy.data.collections[2].objects:
+    print(obj.name)

@@ -83,6 +83,7 @@ def create_nurbs_surf():
             p.co = new_co
 
     surface_object = bpy.data.objects.new('NURBS_OBJ', surface_data)
+    # IMPORTANT: this will gen under the selected collection
     bpy.context.collection.objects.link(surface_object)
 
     splines = surface_object.data.splines
