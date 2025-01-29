@@ -1,7 +1,7 @@
 
-<div style="display:flex; justify-content:center;">
-    <img src="doc/banner_elspider.png" alt="Image 1" style="height:300px; margin-right:0px;">
-    <img src="doc/banner_elspider2.png" alt="Image 2" style="height:300px;">
+<div style="display:flex; justify-content:center; align:center">
+    <img src="doc/banner_elspider.png" alt="Image 1" style="height:200px; margin-right:0px;">
+    <img src="doc/banner_elspider2.png" alt="Image 2" style="height:200px;">
 </div>
 
 # Blender Utilities
