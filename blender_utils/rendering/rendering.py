@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-28 21:42:27
 Description: file content
 FilePath: /blender_utils/blender_utils/rendering/rendering.py
-LastEditTime: 2025-01-28 22:21:16
+LastEditTime: 2025-01-29 14:48:21
 LastEditors: MasterYip
 '''
 
@@ -78,10 +78,10 @@ def link_material_to_obj(obj, material):
         raise ValueError("obj must be a list or a bpy.types.Object")
 
 
-def create_gradient_material_for_curve(curve_obj, start_color=(1, 0, 0, 1), end_color=(1, 0, 0, 0)):
+def create_gradient_material_for_curve(curve_objs, start_color=(1, 0, 0, 1), end_color=(1, 0, 0, 0)):
     """
     为曲线对象创建从头到尾的颜色渐变材质
-    :param curve_obj: 曲线对象
+    :param curve_objs: 曲线对象
     :param start_color: 渐变起始颜色 (R, G, B, A)
     :param end_color: 渐变结束颜色 (R, G, B, A)
     :return: 创建的材质
@@ -100,8 +100,8 @@ def create_gradient_material_for_curve(curve_obj, start_color=(1, 0, 0, 1), end_
     # 1. 添加渐变纹理节点
     gradient_node = nodes.new(type='ShaderNodeValToRGB')
     gradient_node.location = (0, 0)
-    gradient_node.color_ramp.elements[0].color = start_color  # 起始颜色
-    gradient_node.color_ramp.elements[1].color = end_color    # 结束颜色
+    gradient_node.color_ramp.elements[1].color = start_color  # 起始颜色
+    gradient_node.color_ramp.elements[0].color = end_color    # 结束颜色
 
     # # 2. 添加属性节点（使用曲线参数）
     # attribute_node = nodes.new(type='ShaderNodeAttribute')
@@ -109,7 +109,9 @@ def create_gradient_material_for_curve(curve_obj, start_color=(1, 0, 0, 1), end_
     # attribute_node.attribute_name = 'parametric'  # 使用曲线的参数化坐标
     # 2. 添加纹理坐标节点
     texture_node = nodes.new(type='ShaderNodeTexCoord')
-    texture_node.from_instancer = True
+    # texture_node.from_instancer = True
+    # separate XYZ
+    separate_node = nodes.new(type='ShaderNodeSeparateXYZ')
 
     # 3. 添加BSDF节点
     bsdf_node = nodes.new(type='ShaderNodeBsdfPrincipled')
@@ -121,16 +123,20 @@ def create_gradient_material_for_curve(curve_obj, start_color=(1, 0, 0, 1), end_
 
     # 连接节点
     # links.new(attribute_node.outputs['Fac'], gradient_node.inputs['Fac'])
-    links.new(texture_node.outputs['Object'], gradient_node.inputs['Fac'])
+    links.new(texture_node.outputs['UV'], separate_node.inputs['Vector'])
+    links.new(separate_node.outputs['X'], gradient_node.inputs['Fac'])
     links.new(gradient_node.outputs['Color'], bsdf_node.inputs['Base Color'])
     links.new(gradient_node.outputs['Alpha'], bsdf_node.inputs['Alpha'])
     links.new(bsdf_node.outputs['BSDF'], output_node.inputs['Surface'])
 
     # 将材质应用到曲线对象
-    if curve_obj.data.materials:
-        curve_obj.data.materials[0] = material  # 替换第一个材质
-    else:
-        curve_obj.data.materials.append(material)  # 添加新材质
+    if isinstance(curve_objs, bpy.types.Object):
+        curve_objs = [curve_objs]
+    for curve_obj in curve_objs:
+        if curve_obj.data.materials:
+            curve_obj.data.materials[0] = material
+        else:
+            curve_obj.data.materials.append(material)
 
     return material
 
@@ -145,10 +151,6 @@ if __name__ == "<run_path>":
     # 示例：为选中的曲线对象创建渐变材质
 
     if bpy.context.selected_objects:
-        selected_obj = bpy.context.selected_objects[0]  # 获取选中的第一个对象
-        if selected_obj.type == 'CURVE':
-            create_gradient_material_for_curve(selected_obj, start_color=(1, 0, 0, 1), end_color=(1, 0, 0, 0))
-        else:
-            print("选中的对象不是曲线")
+        create_gradient_material_for_curve(bpy.context.selected_objects, start_color=(1, 0, 0, 1), end_color=(1, 0, 0, 0))
     else:
-        print("请先选中一个曲线对象")
+        print("请先选中一个(曲线)对象")

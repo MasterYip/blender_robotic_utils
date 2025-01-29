@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-28 15:41:04
 Description: file content
 FilePath: /blender_utils/blender_utils/modeling/curves_gen.py
-LastEditTime: 2025-01-28 21:26:50
+LastEditTime: 2025-01-29 14:53:06
 LastEditors: MasterYip
 '''
 
@@ -15,7 +15,7 @@ def create_curve(ctrl_pts, name="DefaultCurve", collection_name="Curves",
                  type='NURBS', order=4, bevel_depth=0.1):
     crv = bpy.data.curves.new('curve', 'CURVE')
     crv.bevel_depth = bevel_depth
-    crv.use_fill_caps = True
+    crv.use_fill_caps = False
     crv.dimensions = '3D'
     spline = crv.splines.new(type=type)
     spline.points.add(len(ctrl_pts) - 1)
