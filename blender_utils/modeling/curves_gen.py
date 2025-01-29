@@ -11,7 +11,8 @@ import bpy
 from blender_utils.utils.utils import link_obj_to_collection
 
 
-def create_curve(ctrl_pts, name="DefaultCurve", type='NURBS', order=4, bevel_depth=0.1):
+def create_curve(ctrl_pts, name="DefaultCurve", collection_name="Curves",
+                 type='NURBS', order=4, bevel_depth=0.1):
     crv = bpy.data.curves.new('curve', 'CURVE')
     crv.bevel_depth = bevel_depth
     crv.use_fill_caps = True
@@ -26,7 +27,7 @@ def create_curve(ctrl_pts, name="DefaultCurve", type='NURBS', order=4, bevel_dep
 
     # set the directroy of the curve
     obj = bpy.data.objects.new(name, crv)
-    link_obj_to_collection(obj)
+    link_obj_to_collection(obj, collection_name)
     # bpy.context.collection.objects.link(obj)
 
 

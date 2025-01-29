@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-28 22:42:24
 Description: file content
 FilePath: /blender_utils/blender_utils/animation/curve_animator.py
-LastEditTime: 2025-01-28 23:03:31
+LastEditTime: 2025-01-29 11:52:44
 LastEditors: MasterYip
 '''
 
@@ -71,8 +71,6 @@ def set_curve_keyframe(curve, ctrl_points, frame):
     for point, new_co in zip(control_points, ctrl_points):
         point.co.x, point.co.y, point.co.z = new_co
         point.keyframe_insert(data_path="co", index=-1)  # 插入位置关键帧
-
-    print(f"已为曲线 {curve.name} 的控制点添加关键帧")
 
 
 if __name__ == "<run_path>":

@@ -3,17 +3,19 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-28 22:36:04
+LastEditTime: 2025-01-29 12:02:38
 LastEditors: MasterYip
 '''
 
-import os
-from shlex import join
-import yaml
 import bpy
+import os
+import yaml
 import mathutils
 import math
 import csv
+from blender_utils.modeling.curves_gen import create_curve
+from blender_utils.animation.curve_animator import set_curve_keyframe
+from blender_utils.rendering.rendering import create_gradient_material_for_curve
 
 # Directory Management
 try:
@@ -41,6 +43,15 @@ def read_csv_joint_states(filename):
         elif len(q[0]) == 24:
             # FIXME: Data unit conversion
             return times, [[math.degrees(float(i)) if idx > 5 else float(i)*100 for idx, i in enumerate(row)] for row in q]
+
+
+def read_csv_swingtraj(filename):
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        traj = list(reader)[1:]
+        times = [float(row[0]) for row in traj]
+        traj = [row[1:] for row in traj]
+        return times, [[float(i)*100 for i in row] for row in traj]
 
 
 class RobotAnimatorConfig(dict):
@@ -114,27 +125,68 @@ class RobotAnimator(object):
         self.armature.rotation_euler = pose[3:]
         self.armature.keyframe_insert(data_path="location", frame=frame)
 
-    def load_animation(self, joint_states_file):
+    def load_animation(self, joint_states_file, decimation=10):
         times, joint_states = read_csv_joint_states(joint_states_file)
         if len(joint_states[0]) == 18:
-            for time, state in zip(times, joint_states):
+            for time, state in zip(times[::decimation], joint_states[::decimation]):
                 frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
                 self.set_joint_keyframe(frame, state)
         elif len(joint_states[0]) == 24:
-            for time, state in zip(times, joint_states):
+            for time, state in zip(times[::decimation], joint_states[::decimation]):
                 frame = int((time + self.config["time_start"]) * self.config['frame_rate'])
                 self.set_joint_keyframe(frame, state[6:])
                 self.set_pose_keyframe(frame, state[:6])
 
 
+class SwingTrajAnimator(object):
+    def __init__(self, traj_file) -> None:
+        self.collection_name = "SwingTraj"
+        self.trajname_prefix = "trajectory"
+        self.traj_length = 20
+        self.frame_rate = 30  # frame rate of the animation scene
+        self.times, self.traj = read_csv_swingtraj(traj_file)
+        self.init_swing_traj()
+        self.load_animation()
+        pass
+
+    def init_swing_traj(self):
+        for i in range(len(self.traj[0]) // 3):
+            ctrl_points = [self.traj[0][3*i:3*(i+1)] for idx in range(self.traj_length)]
+            # print(ctrl_points)
+            create_curve(ctrl_points, f"{self.trajname_prefix}_{i}", self.collection_name, bevel_depth=1.0)
+
+    def load_animation(self, decimation=10):
+        time_buf = []
+        traj_buf = []
+        for time, traj in zip(self.times[::decimation], self.traj[::decimation]):
+            time_buf.append(time)
+            traj_buf.append(traj)
+            if len(time_buf) < self.traj_length:
+                # pad to traj_length using first traj
+                time_buf = [self.times[0]] * (self.traj_length - len(time_buf)) + time_buf
+                traj_buf = [self.traj[0]] * (self.traj_length - len(traj_buf)) + traj_buf
+            while len(time_buf) > self.traj_length:
+                time_buf.pop(0)
+                traj_buf.pop(0)
+
+            frame = int(time * self.frame_rate)
+            for i in range(len(self.traj[0]) // 3):
+                ctrl_points = [traj_buf[idx][3*i:3*(i+1)] for idx in range(self.traj_length)]
+                curve = bpy.data.objects.get(f"{self.trajname_prefix}_{i}")
+                set_curve_keyframe(curve, ctrl_points, frame)
+
+
 if __name__ == "<run_path>":
 
-    # Load configuration
-    config = RobotAnimatorConfig(os.path.join(ROOT_DIR, 'robot_animator_cfg.yaml'))
-    animator = RobotAnimator(config)
+    # # Load configuration
+    # config = RobotAnimatorConfig(os.path.join(ROOT_DIR, 'robot_animator_cfg.yaml'))
+    # animator = RobotAnimator(config)
+    # # Load joint states
+    # file = os.path.join(ROOT_DIR, 'joint_states.csv')
+    # animator.load_animation(file)
+    # print("Keyframes set successfully.")
 
-    # Load joint states
-    file = os.path.join(ROOT_DIR, 'joint_states.csv')
-
-    animator.load_animation(file)
-    print("Keyframes set successfully.")
+    # Load swing trajectory
+    traj_file = os.path.join(ROOT_DIR, 'swing_traj.csv')
+    animator = SwingTrajAnimator(traj_file)
+    print("Swing trajectory loaded successfully.")

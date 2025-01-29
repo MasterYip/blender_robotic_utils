@@ -1,4 +1,8 @@
-# blender_utils
+![Banner](doc/banner_elspider.png)
+
+# Blender Utilities
+
+Blender Utilities for modeling, animation, and rendering.
 
 ## pkg blender_utils
 
