@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-28 21:42:27
 Description: file content
 FilePath: /blender_utils/blender_utils/rendering/rendering.py
-LastEditTime: 2025-01-29 14:48:21
+LastEditTime: 2025-01-29 14:58:42
 LastEditors: MasterYip
 '''
 
@@ -116,6 +116,7 @@ def create_gradient_material_for_curve(curve_objs, start_color=(1, 0, 0, 1), end
     # 3. 添加BSDF节点
     bsdf_node = nodes.new(type='ShaderNodeBsdfPrincipled')
     bsdf_node.location = (200, 0)
+    bsdf_node.inputs['Emission Strength'].default_value = 1.0
 
     # 4. 添加输出节点
     output_node = nodes.new(type='ShaderNodeOutputMaterial')
@@ -127,6 +128,7 @@ def create_gradient_material_for_curve(curve_objs, start_color=(1, 0, 0, 1), end
     links.new(separate_node.outputs['X'], gradient_node.inputs['Fac'])
     links.new(gradient_node.outputs['Color'], bsdf_node.inputs['Base Color'])
     links.new(gradient_node.outputs['Alpha'], bsdf_node.inputs['Alpha'])
+    links.new(gradient_node.outputs['Color'], bsdf_node.inputs['Emission Color'])
     links.new(bsdf_node.outputs['BSDF'], output_node.inputs['Surface'])
 
     # 将材质应用到曲线对象
@@ -151,6 +153,6 @@ if __name__ == "<run_path>":
     # 示例：为选中的曲线对象创建渐变材质
 
     if bpy.context.selected_objects:
-        create_gradient_material_for_curve(bpy.context.selected_objects, start_color=(1, 0, 0, 1), end_color=(1, 0, 0, 0))
+        create_gradient_material_for_curve(bpy.context.selected_objects, start_color=(1, 0.0, 0, 1), end_color=(1, 0.0, 0, 0))
     else:
         print("请先选中一个(曲线)对象")

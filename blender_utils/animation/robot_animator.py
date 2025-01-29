@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-29 14:52:53
+LastEditTime: 2025-01-29 14:54:03
 LastEditors: MasterYip
 '''
 
@@ -142,7 +142,7 @@ class SwingTrajAnimator(object):
     def __init__(self, traj_file) -> None:
         self.collection_name = "SwingTraj"
         self.trajname_prefix = "trajectory"
-        self.traj_length = 20
+        self.traj_length = 30
         self.frame_rate = 30  # frame rate of the animation scene
         self.times, self.traj = read_csv_swingtraj(traj_file)
         self.init_swing_traj()
