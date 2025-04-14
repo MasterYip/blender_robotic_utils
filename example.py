@@ -276,7 +276,7 @@ def example_legged_robot_test_course():
     print("Legged robot test course generated successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     # example_flat_terrain()
     # example_stairs()
