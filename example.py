@@ -17,14 +17,20 @@ except:
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
-# Ensure we have the required dependencies
-try:
-    import noise
-except ImportError:
-    print("Installing noise package for Perlin noise generation...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "noise"])
-    import noise
+# # Ensure we have the required dependencies
+# try:
+#     import noise
+# except ImportError:
+#     try:
+#         print("Installing noise package for Perlin noise generation...")
+#         print("Deps: `sudo apt-get install python3-dev`")
+#         import subprocess
+#         subprocess.check_call([sys.executable, "-m", "pip", "install", "noise"])
+#         import noise
+#     except:
+#         print("Falling back to opensimplex for noise generation...")
+#         subprocess.check_call([sys.executable, "-m", "pip", "install", "opensimplex"])
+#         import opensimplex as noise
 
 import bpy
 import numpy as np

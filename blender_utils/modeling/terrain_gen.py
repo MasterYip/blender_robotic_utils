@@ -10,6 +10,13 @@ import numpy as np
 import bpy
 import os
 import random
+# from noise import pnoise2
+def pnoise2(x,y):
+    """
+    Placeholder for Perlin noise function.
+    In actual implementation, this should be replaced with a proper Perlin noise function.
+    """
+    return random.uniform(-1, 1)
 
 from .gridmap_gen import gridmap_gen
 
@@ -150,7 +157,7 @@ class TerrainGenerator:
         - noise_scale: scale of the noise (higher means more detailed)
         - seed: random seed for reproducibility
         """
-        from noise import pnoise2
+        
 
         if seed is not None:
             random.seed(seed)
@@ -273,7 +280,7 @@ class TerrainGenerator:
                             section_heights[i, j] = progress * height
 
             elif section_type == 'noise':
-                from noise import pnoise2
+                
 
                 base_height = section.get('base_height', 0)
                 noise_amplitude = section.get('noise_amplitude', 0.5)
