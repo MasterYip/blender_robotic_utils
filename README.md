@@ -13,6 +13,12 @@ Blender Utilities for modeling, animation, and rendering.
     <video src="https://github.com/user-attachments/assets/462ff944-2e98-4c50-9043-d140bcd54d4a" width="200" height="100" autoplay controls muted loop playsinline></video>
 </p>
 
+### Terrain Gen
+
+Confined 2-layer terrain generation.
+![terrain_gen](doc/terrain_gen/confined_2layer.png)
+
+
 ## pkg blender_utils
 
 ### Installation
