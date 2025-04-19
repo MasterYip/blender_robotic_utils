@@ -311,15 +311,18 @@ def example_square_terrain_patches():
         {'type': 'noise', 'base_height': 0.0, 'noise_amplitude': 0.2, 'noise_scale': 0.1},
     ]
 
-    # Generate square patches terrain
+    # Generate square patches terrain with improved padding and transitions
     terrain_gen.generate_square_terrain_patches(
         name="SquareTerrain",
-        size=(30, 30),  # Make it large enough for robot testing
+        size=(30, 30),           # Make it large enough for robot testing
         position=(0, 0, 0),
-        resolution=(300, 300),  # Higher resolution for smoother transitions
-        num_patches=(5, 5),    # 5×5 grid of different terrains
+        resolution=(300, 300),   # Higher resolution for smoother transitions
+        num_patches=(5, 5),      # 5×5 grid of different terrains
         terrain_types=terrain_types,
-        seed=42              # For reproducible results
+        padding_ratio=0.15,      # Use 15% of patch size as padding between patches
+        transition_smoothness=0.7,  # Higher values make transitions smoother
+        max_height_diff=0.8,     # Limit height differences between adjacent patches
+        seed=42                  # For reproducible results
     )
 
     # Position the camera for a better view of the square patches
