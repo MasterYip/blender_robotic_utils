@@ -376,15 +376,15 @@ def example_confined_terrain_surfaces():
     # Generate a confined terrain with surface modifications
     terrain_gen.generate_with_surface_modifications(
         name="ConfinedTerrainSurfaces",
-        size=(10, 10),
+        size=(100, 100),
         position=(0, 0, 0),
         layer_distance=2.0,
         ground_height=0.0,
         ceiling_height=2.0,
-        obstacle_count=15,
-        min_obstacle_size=(1.0, 1.0, 0.5),
-        max_obstacle_size=(3.0, 3.0, 1.2),
-        resolution=(100, 100)
+        obstacle_count=2000,
+        min_obstacle_size=(0.1, 0.1, 0.02),
+        max_obstacle_size=(5.0, 5.0, 0.7),
+        resolution=(1000, 1000)
     )
 
     # Adjust the camera for a better view
@@ -460,6 +460,7 @@ if __name__ == "<run_path>":
     # example_combined_terrain()
     # example_legged_robot_test_course()
     # example_square_terrain_patches()
+
     # example_confined_terrain_boxes()
-    # example_confined_terrain_surfaces()
-    example_complex_confined_environment()  # Run the complex confined environment example
+    example_confined_terrain_surfaces()
+    # example_complex_confined_environment()  # Run the complex confined environment example
