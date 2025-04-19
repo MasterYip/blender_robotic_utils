@@ -11,15 +11,44 @@ import numpy as np
 import bpy
 import os
 import random
-# from noise import pnoise2
 
+# Try to import the noise module
+# If not available, provide a fallback implementation
+try:
+    from noise import pnoise2
+    NOISE_MODULE_AVAILABLE = True
+except ImportError:
+    NOISE_MODULE_AVAILABLE = False
+    try:
+        # Try to use opensimplex as a fallback
+        import opensimplex
 
-def pnoise2(x, y):
-    """
-    Placeholder for Perlin noise function.
-    In actual implementation, this should be replaced with a proper Perlin noise function.
-    """
-    return random.uniform(-1, 1)
+        def pnoise2(x, y, octaves=1, persistence=0.5, lacunarity=2.0, repeatx=1024, repeaty=1024, base=0):
+            """
+            Fallback implementation of Perlin noise using opensimplex
+            """
+            return opensimplex.noise2(x=x, y=y)
+        print("Using opensimplex as a fallback for noise module")
+        NOISE_MODULE_AVAILABLE = True
+    except ImportError:
+        # Fallback to simple random noise if no other option is available
+        def pnoise2(x, y, *args, **kwargs):
+            """
+            Simple fallback noise function when noise module is not available
+            Not actual Perlin noise, but provides similar functionality for testing
+            """
+            # Use consistent random values for the same coordinates
+            random.seed(int(x * 1000 + y * 1000000))
+            value = random.uniform(-1, 1)
+            # Restore the random state
+            random.seed()
+            return value
+        print("Warning: Neither noise nor opensimplex modules are available.")
+        print("Using simple random noise as fallback - results will not be as good.")
+        print("Install the noise module for better terrain generation:")
+        print("1. Run Blender as administrator")
+        print("2. In Blender's script editor, load and run examples/install_noise_for_blender.py")
+        NOISE_MODULE_AVAILABLE = False
 
 
 class TerrainGenerator:
