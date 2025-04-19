@@ -282,6 +282,54 @@ def example_legged_robot_test_course():
     print("Legged robot test course generated successfully.")
 
 
+def example_square_terrain_patches():
+    """Example of generating a terrain with square patches (like leggedgym)"""
+    clear_scene()
+    setup_lighting()
+    setup_camera()
+
+    # Create a terrain generator
+    terrain_gen = TerrainGenerator(bpy)
+
+    # Define custom terrain types
+    terrain_types = [
+        # Flat ground
+        {'type': 'flat', 'base_height': 0.0},
+        # Low-height stairs
+        {'type': 'stairs', 'step_height': 0.12, 'steps': 4, 'direction': 'random'},
+        # Medium-height stairs
+        {'type': 'stairs', 'step_height': 0.18, 'steps': 3, 'direction': 'random'},
+        # Gentle slope ramp
+        {'type': 'ramp', 'height': 0.3, 'direction': 'random', 'slope_type': 'linear'},
+        # Steeper ramp
+        {'type': 'ramp', 'height': 0.5, 'direction': 'random', 'slope_type': 'linear'},
+        # Sinusoidal ramp
+        {'type': 'ramp', 'height': 0.4, 'direction': 'random', 'slope_type': 'sinusoidal'},
+        # Low noise terrain
+        {'type': 'noise', 'base_height': 0.0, 'noise_amplitude': 0.1, 'noise_scale': 0.15},
+        # Medium noise terrain
+        {'type': 'noise', 'base_height': 0.0, 'noise_amplitude': 0.2, 'noise_scale': 0.1},
+    ]
+
+    # Generate square patches terrain
+    terrain_gen.generate_square_terrain_patches(
+        name="SquareTerrain",
+        size=(30, 30),  # Make it large enough for robot testing
+        position=(0, 0, 0),
+        resolution=(300, 300),  # Higher resolution for smoother transitions
+        num_patches=(5, 5),    # 5×5 grid of different terrains
+        terrain_types=terrain_types,
+        seed=42              # For reproducible results
+    )
+
+    # Position the camera for a better view of the square patches
+    camera = bpy.data.objects["Camera"]
+    camera.location = (15, -15, 20)
+    camera.rotation_euler = (np.radians(60), 0, np.radians(45))
+
+    print("Square terrain patches generated successfully.")
+
+
 if __name__ == "<run_path>":
     # Uncomment the example you want to run
     # example_flat_terrain()
@@ -289,4 +337,5 @@ if __name__ == "<run_path>":
     # example_ramp()
     # example_noisy_terrain()
     # example_combined_terrain()
-    example_legged_robot_test_course()
+    # example_legged_robot_test_course()
+    example_square_terrain_patches()  # Run the new square patches example
