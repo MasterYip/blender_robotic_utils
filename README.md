@@ -32,7 +32,7 @@ Install the package using pip:
 
 ### Examples
 
-
+See the [examples](examples/README.md) directory for various usage examples.
 
 ## Extensions
 
