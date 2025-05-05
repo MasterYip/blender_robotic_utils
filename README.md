@@ -1,8 +1,8 @@
 ![banner](doc/banner_elspider.jpg)
 
-# Blender Utilities
+# Blender Robotic Utilities
 
-Blender Utilities for modeling, animation, and rendering.
+Blender Robotic Utilities for modeling, animation, and rendering.
 
 ## Demos
 
@@ -21,9 +21,13 @@ Blender Utilities for modeling, animation, and rendering.
 pip install -e ./
 ```
 
-## [urdf_importer](https://github.com/HoangGiang93/urdf_importer)
+## Extensions
 
-### Installation
+### [urdf_importer](https://github.com/HoangGiang93/urdf_importer)
+
+#### Installation
+
+**1.Setup Python Env**
 
 Linux:
 
@@ -51,3 +55,13 @@ cd <blender_path>/<version>/python/bin/ # For example cd blender-3.1.2-linux-x64
 ./python.exe -m pip install rospkg
 ./python.exe -m pip install urdf_parser_py
 ```
+
+**2.Install Add-on**
+
+- Compress the folder `urdf_importer_addon` into a ZIP file named `urdf_importer_addon.zip`.
+- Open a terminal, source the ROS workspace that contains the URDF model, and then start Blender by running `blender` in the terminal.
+- In Blender, go to the `Edit` menu and select `Preferences`.
+- Click on `Install`.
+- Navigate to and select the `urdf_importer_addon.zip` file, then click `Install Add-on`.
+- Enable the add-on by checking the box next to `Import-Export: Import URDF Format`.
+- Verify the installation by opening `File` → `Import`. You should see `URDF (.urdf)` listed in the menu.
