@@ -149,10 +149,10 @@ class ConfinedTerrainGenerator:
             ground_heights = np.full((50, 50), ground_height)
 
         ground_bound = (
-            position[0] - size[0]/2,
-            position[0] + size[0]/2,
-            position[1] - size[1]/2,
-            position[1] + size[1]/2
+            position[0] - size[0] / 2,
+            position[0] + size[0] / 2,
+            position[1] - size[1] / 2,
+            position[1] + size[1] / 2
         )
         ground_obj = self.bpy_nh.data.objects.new(f"{name}_Ground", None)
         gridmap_gen(self.bpy_nh, f"{name}_Ground", ground_heights, ground_bound)
@@ -168,10 +168,10 @@ class ConfinedTerrainGenerator:
         inv_ceiling_heights = ceiling_heights[::-1, ::-1]
 
         ceiling_bound = (
-            position[0] - size[0]/2,
-            position[0] + size[0]/2,
-            position[1] - size[1]/2,
-            position[1] + size[1]/2
+            position[0] - size[0] / 2,
+            position[0] + size[0] / 2,
+            position[1] - size[1] / 2,
+            position[1] + size[1] / 2
         )
         ceiling_obj = self.bpy_nh.data.objects.new(f"{name}_Ceiling", None)
         gridmap_gen(self.bpy_nh, f"{name}_Ceiling", inv_ceiling_heights, ceiling_bound)
@@ -181,10 +181,10 @@ class ConfinedTerrainGenerator:
         # Generate random boxes
         for i in range(box_count):
             # Random position within terrain bounds
-            x = random.uniform(position[0] - size[0]/2 + max_box_size[0]/2,
-                               position[0] + size[0]/2 - max_box_size[0]/2)
-            y = random.uniform(position[1] - size[1]/2 + max_box_size[1]/2,
-                               position[1] + size[1]/2 - max_box_size[1]/2)
+            x = random.uniform(position[0] - size[0] / 2 + max_box_size[0] / 2,
+                               position[0] + size[0] / 2 - max_box_size[0] / 2)
+            y = random.uniform(position[1] - size[1] / 2 + max_box_size[1] / 2,
+                               position[1] + size[1] / 2 - max_box_size[1] / 2)
 
             # Random size
             box_width = random.uniform(min_box_size[0], max_box_size[0])
@@ -194,8 +194,8 @@ class ConfinedTerrainGenerator:
             if random.choice([True, False]):  # Connect to ground
                 box_height = random.uniform(min_box_size[2], max_box_size[2])
                 # Find ground height at this position
-                rel_x = (x - (position[0] - size[0]/2)) / size[0]
-                rel_y = (y - (position[1] - size[1]/2)) / size[1]
+                rel_x = (x - (position[0] - size[0] / 2)) / size[0]
+                rel_y = (y - (position[1] - size[1] / 2)) / size[1]
                 i_idx = min(int(rel_x * len(ground_heights)), len(ground_heights) - 1)
                 j_idx = min(int(rel_y * len(ground_heights[0])), len(ground_heights[0]) - 1)
                 local_ground_height = ground_heights[i_idx][j_idx]
@@ -205,8 +205,8 @@ class ConfinedTerrainGenerator:
             else:  # Connect to ceiling
                 box_height = random.uniform(min_box_size[2], max_box_size[2])
                 # Find ceiling height at this position
-                rel_x = (x - (position[0] - size[0]/2)) / size[0]
-                rel_y = (y - (position[1] - size[1]/2)) / size[1]
+                rel_x = (x - (position[0] - size[0] / 2)) / size[0]
+                rel_y = (y - (position[1] - size[1] / 2)) / size[1]
                 i_idx = min(int(rel_x * len(ceiling_heights)), len(ceiling_heights) - 1)
                 j_idx = min(int(rel_y * len(ceiling_heights[0])), len(ceiling_heights[0]) - 1)
                 local_ceiling_height = ceiling_heights[i_idx][j_idx]
@@ -256,10 +256,10 @@ class ConfinedTerrainGenerator:
 
         for i in range(obstacle_count):
             # Random position within terrain bounds
-            x = random.uniform(position[0] - size[0]/2 + max_obstacle_size[0]/2,
-                               position[0] + size[0]/2 - max_obstacle_size[0]/2)
-            y = random.uniform(position[1] - size[1]/2 + max_obstacle_size[1]/2,
-                               position[1] + size[1]/2 - max_obstacle_size[1]/2)
+            x = random.uniform(position[0] - size[0] / 2 + max_obstacle_size[0] / 2,
+                               position[0] + size[0] / 2 - max_obstacle_size[0] / 2)
+            y = random.uniform(position[1] - size[1] / 2 + max_obstacle_size[1] / 2,
+                               position[1] + size[1] / 2 - max_obstacle_size[1] / 2)
 
             # Random size
             obs_width = random.uniform(min_obstacle_size[0], max_obstacle_size[0])
@@ -270,10 +270,10 @@ class ConfinedTerrainGenerator:
             connect_to_ground = random.choice([True, False])
 
             # Calculate affected grid indices
-            x_min_rel = ((x - obs_width/2) - (position[0] - size[0]/2)) / size[0]
-            x_max_rel = ((x + obs_width/2) - (position[0] - size[0]/2)) / size[0]
-            y_min_rel = ((y - obs_length/2) - (position[1] - size[1]/2)) / size[1]
-            y_max_rel = ((y + obs_length/2) - (position[1] - size[1]/2)) / size[1]
+            x_min_rel = ((x - obs_width / 2) - (position[0] - size[0] / 2)) / size[0]
+            x_max_rel = ((x + obs_width / 2) - (position[0] - size[0] / 2)) / size[0]
+            y_min_rel = ((y - obs_length / 2) - (position[1] - size[1] / 2)) / size[1]
+            y_max_rel = ((y + obs_length / 2) - (position[1] - size[1] / 2)) / size[1]
 
             i_min = max(0, min(resolution[0] - 1, int(x_min_rel * resolution[0])))
             i_max = max(0, min(resolution[0] - 1, int(x_max_rel * resolution[0])))
@@ -295,7 +295,7 @@ class ConfinedTerrainGenerator:
 
                 # Store obstacle info for potential use
                 obstacle_locations.append({
-                    'position': (x, y, ground_height + obs_height/2),
+                    'position': (x, y, ground_height + obs_height / 2),
                     'size': (obs_width, obs_length, obs_height),
                     'connect_to': 'ground'
                 })
@@ -307,7 +307,7 @@ class ConfinedTerrainGenerator:
 
                 # Store obstacle info for potential use
                 obstacle_locations.append({
-                    'position': (x, y, ceiling_height - obs_height/2),
+                    'position': (x, y, ceiling_height - obs_height / 2),
                     'size': (obs_width, obs_length, obs_height),
                     'connect_to': 'ceiling'
                 })
@@ -326,7 +326,7 @@ class ConfinedTerrainGenerator:
         )
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Example usage
     terrain_gen = ConfinedTerrainGenerator(bpy)
 

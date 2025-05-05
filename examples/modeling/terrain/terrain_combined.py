@@ -1,8 +1,8 @@
 '''
 Author: GitHub Copilot
-Date: 2025-04-19
-Description: Example demonstrating terrain generation for legged locomotion
-FilePath: /blender_utils/examples/terrain_gen_eg.py
+Date: 2025-05-05
+Description: Examples for creating combined and complex terrains for robot testing
+FilePath: /blender_utils/examples/modeling/terrain/terrain_combined.py
 '''
 
 import os
@@ -14,29 +14,15 @@ try:
 except:
     # Run in ipykernel & interactive
     ROOT_DIR = os.getcwd()
-if ROOT_DIR not in sys.path:
-    sys.path.append(ROOT_DIR)
 
-# Check if we have noise dependencies
-try:
-    from noise import pnoise2
-    print("noise module is available - Perlin noise will be used for terrain generation")
-    NOISE_MODULE = "noise"
-except ImportError:
-    try:
-        import opensimplex
-        print("opensimplex module is available - OpenSimplex noise will be used for terrain generation")
-        NOISE_MODULE = "opensimplex"
-    except ImportError:
-        print("Warning: Neither noise nor opensimplex modules are available.")
-        print("Using simple random noise fallback - terrain quality will be reduced.")
-        print("To install noise module, run examples/install_noise_for_blender.py from Blender's script editor")
-        NOISE_MODULE = "fallback"
+# Add parent directories to path to ensure imports work properly
+parent_dir = os.path.abspath(os.path.join(ROOT_DIR, '..', '..', '..'))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
 
 import bpy
 import numpy as np
 from blender_utils.modeling.terrain_gen import TerrainGenerator
-from blender_utils.modeling.confined_terrain_gen import ConfinedTerrainGenerator
 
 
 def clear_scene():
@@ -79,97 +65,6 @@ def setup_camera():
 
     # Set as active camera
     bpy.context.scene.camera = camera_object
-
-
-def example_flat_terrain():
-    """Example of generating a flat terrain"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a terrain generator
-    terrain_gen = TerrainGenerator(bpy)
-
-    # Generate a flat terrain
-    terrain_gen.generate_flat_terrain(
-        name="FlatGround",
-        size=(10, 10),
-        position=(0, 0, 0),
-        resolution=(50, 50)
-    )
-
-    print("Flat terrain generated successfully.")
-
-
-def example_stairs():
-    """Example of generating stairs"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a terrain generator
-    terrain_gen = TerrainGenerator(bpy)
-
-    # Generate stairs
-    terrain_gen.generate_stairs(
-        name="Stairs",
-        size=(10, 10),
-        position=(0, 0, 0),
-        resolution=(50, 50),
-        step_height=0.2,
-        step_depth=1.0,
-        steps=10,
-        direction='x'
-    )
-
-    print("Stairs generated successfully.")
-
-
-def example_ramp():
-    """Example of generating a ramp"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a terrain generator
-    terrain_gen = TerrainGenerator(bpy)
-
-    # Generate a ramp
-    terrain_gen.generate_ramp(
-        name="Ramp",
-        size=(10, 10),
-        position=(0, 0, 0),
-        resolution=(50, 50),
-        height=2.0,
-        direction='x',
-        slope_type='linear'
-    )
-
-    print("Ramp generated successfully.")
-
-
-def example_noisy_terrain():
-    """Example of generating a noisy terrain"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a terrain generator
-    terrain_gen = TerrainGenerator(bpy)
-
-    # Generate a noisy terrain
-    terrain_gen.generate_noisy_terrain(
-        name="NoisyTerrain",
-        size=(10, 10),
-        position=(0, 0, 0),
-        resolution=(100, 100),
-        base_height=0,
-        noise_amplitude=0.5,
-        noise_scale=0.2,
-        seed=42
-    )
-
-    print("Noisy terrain generated successfully.")
 
 
 def example_combined_terrain():
@@ -335,137 +230,8 @@ def example_square_terrain_patches():
     print("Square terrain patches generated successfully.")
 
 
-def example_confined_terrain_boxes():
-    """Example of generating a confined terrain with boxes as obstacles"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a confined terrain generator
-    terrain_gen = ConfinedTerrainGenerator(bpy)
-
-    # Generate a confined terrain with random box obstacles
-    terrain_gen.generate_with_boxes(
-        name="ConfinedTerrainBoxes",
-        size=(10, 10),
-        position=(0, 0, 0),
-        layer_distance=2.0,
-        ground_height=0.0,
-        box_count=20,
-        min_box_size=(0.5, 0.5, 0.3),
-        max_box_size=(2.0, 2.0, 1.5)
-    )
-
-    # Adjust the camera for a better view
-    camera = bpy.data.objects["Camera"]
-    camera.location = (8, -10, 5)
-    camera.rotation_euler = (np.radians(55), 0, np.radians(50))
-
-    print("Confined terrain with box obstacles generated successfully.")
-
-
-def example_confined_terrain_surfaces():
-    """Example of generating a confined terrain with surface modifications"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a confined terrain generator
-    terrain_gen = ConfinedTerrainGenerator(bpy)
-
-    # Generate a confined terrain with surface modifications
-    terrain_gen.generate_with_surface_modifications(
-        name="ConfinedTerrainSurfaces",
-        size=(50, 50),
-        position=(0, 0, 0),
-        layer_distance=2.0,
-        ground_height=0.0,
-        ceiling_height=2.0,
-        obstacle_count=500,
-        min_obstacle_size=(0.1, 0.1, 0.02),
-        max_obstacle_size=(5.0, 5.0, 1.0),
-        resolution=(500, 500)
-    )
-
-    # Adjust the camera for a better view
-    camera = bpy.data.objects["Camera"]
-    camera.location = (8, -10, 5)
-    camera.rotation_euler = (np.radians(55), 0, np.radians(50))
-
-    print("Confined terrain with surface modifications generated successfully.")
-
-
-def example_complex_confined_environment():
-    """Create a complex confined environment with varying ceiling height"""
-    clear_scene()
-    setup_lighting()
-    setup_camera()
-
-    # Create a terrain generator and confined terrain generator
-    terrain_gen = TerrainGenerator(bpy)
-    confined_gen = ConfinedTerrainGenerator(bpy)
-
-    # Generate a noisy ground layer
-    ground_heights = terrain_gen.generate_noisy_terrain(
-        name="NoisyGround",
-        size=(15, 15),
-        position=(0, 0, 0),
-        resolution=(80, 80),
-        base_height=0.0,
-        noise_amplitude=0.3,
-        noise_scale=0.15,
-        seed=42
-    )
-
-    # Generate a ceiling with complementary pattern but inverted
-    # Creating a cave-like environment where low ground has higher ceiling
-    ceiling_heights = np.zeros_like(ground_heights)
-    for i in range(ceiling_heights.shape[0]):
-        for j in range(ceiling_heights.shape[1]):
-            # Make ceiling height inversely related to ground height
-            # Base ceiling is at 3.0, lower where ground is higher
-            ceiling_heights[i, j] = 3.0 - ground_heights[i, j] * 0.5
-
-    # Delete the temporary ground mesh
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.data.objects['NoisyGround'].select_set(True)
-    bpy.ops.object.delete()
-
-    # Now generate the confined terrain with these height maps
-    confined_gen.generate_with_boxes(
-        name="ComplexConfinedEnvironment",
-        size=(15, 15),
-        position=(0, 0, 0),
-        ground_heights=ground_heights,
-        ceiling_heights=ceiling_heights,
-        box_count=25,
-        min_box_size=(0.8, 0.8, 0.5),
-        max_box_size=(2.5, 2.5, 1.8)
-    )
-
-    # Adjust the camera for a better view
-    camera = bpy.data.objects["Camera"]
-    camera.location = (10, -12, 6)
-    camera.rotation_euler = (np.radians(55), 0, np.radians(55))
-
-    print("Complex confined environment generated successfully.")
-
-
 if __name__ == "<run_path>":
     # Uncomment the example you want to run
-
-    # === IsaacGym Style Terrain === #
-    # example_flat_terrain()
-    # example_stairs()
-    # example_ramp()
-    # example_noisy_terrain()
-    # example_combined_terrain()
+    example_combined_terrain()
     # example_legged_robot_test_course()
     # example_square_terrain_patches()
-
-    # === Confined Environment === #
-    """ Boxes + Planes """
-    example_confined_terrain_boxes()
-    # example_complex_confined_environment()
-    """ Surfaces """
-    # example_confined_terrain_surfaces()
