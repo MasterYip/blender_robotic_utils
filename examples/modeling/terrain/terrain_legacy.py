@@ -2,7 +2,7 @@
 Author: GitHub Copilot
 Date: 2025-04-19
 Description: Example demonstrating terrain generation for legged locomotion
-FilePath: /blender_utils/examples/terrain_gen_eg.py
+FilePath: /blender_utils/example.py
 '''
 
 import os
