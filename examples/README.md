@@ -21,6 +21,10 @@ Examples related to creating and manipulating 3D models and terrain.
 
 - **[gridmap_examples.py](modeling/gridmap/gridmap_examples.py)**: Examples of creating height-based terrains using gridmaps
 
+#### Surface Generation
+
+- **[surface_gen_examples.py](modeling/surface_gen_examples.py)**: Examples of creating NURBS surfaces and polygonal surfaces from border points
+
 ### Animation
 
 Examples for animating robots and trajectories.

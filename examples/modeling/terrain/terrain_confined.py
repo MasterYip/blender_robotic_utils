@@ -182,7 +182,7 @@ def example_complex_confined_environment():
     print("Complex confined environment generated successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     example_confined_terrain_boxes()
     # example_confined_terrain_surfaces()

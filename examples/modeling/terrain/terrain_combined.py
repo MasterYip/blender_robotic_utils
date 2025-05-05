@@ -230,7 +230,7 @@ def example_square_terrain_patches():
     print("Square terrain patches generated successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     example_combined_terrain()
     # example_legged_robot_test_course()

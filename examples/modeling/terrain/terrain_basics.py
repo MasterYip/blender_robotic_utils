@@ -158,7 +158,7 @@ def example_noisy_terrain():
     print("Noisy terrain generated successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     example_flat_terrain()
     # example_stairs()

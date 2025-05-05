@@ -75,7 +75,7 @@ def example_sine_wave_gridmap():
 
     # Define the grid resolution
     resolution = (50, 50)
-    
+
     # Create a sine wave height map
     h_mat = np.zeros(resolution)
     for i in range(resolution[0]):
@@ -83,13 +83,13 @@ def example_sine_wave_gridmap():
             x = i / resolution[0] * 4 * np.pi
             y = j / resolution[1] * 4 * np.pi
             h_mat[i, j] = 0.5 * np.sin(x) * np.sin(y)
-    
+
     # Define the bounds of the gridmap (xmin, xmax, ymin, ymax)
     bound = (-5, 5, -5, 5)
-    
+
     # Generate the gridmap mesh
     gridmap_gen(bpy, "SineWaveGridmap", h_mat, bound)
-    
+
     print("Sine wave gridmap generated successfully.")
 
 
@@ -101,22 +101,22 @@ def example_checkerboard_gridmap():
 
     # Define the grid resolution
     resolution = (20, 20)
-    
+
     # Create a checkerboard height map
     h_mat = np.zeros(resolution)
     checker_size = 4  # Size of each checker square
-    
+
     for i in range(resolution[0]):
         for j in range(resolution[1]):
             if ((i // checker_size) % 2 == 0) != ((j // checker_size) % 2 == 0):
                 h_mat[i, j] = 0.5
-    
+
     # Define the bounds of the gridmap (xmin, xmax, ymin, ymax)
     bound = (-5, 5, -5, 5)
-    
+
     # Generate the gridmap mesh
     gridmap_gen(bpy, "CheckerboardGridmap", h_mat, bound)
-    
+
     print("Checkerboard gridmap generated successfully.")
 
 
@@ -128,20 +128,20 @@ def example_crater_gridmap():
 
     # Define the grid resolution
     resolution = (100, 100)
-    
+
     # Create a crater-like height map
     h_mat = np.zeros(resolution)
     center_x, center_y = resolution[0] / 2, resolution[1] / 2
     crater_radius = min(resolution) / 3
     rim_height = 1.0
-    
+
     for i in range(resolution[0]):
         for j in range(resolution[1]):
             # Calculate distance from center
             dx = (i - center_x) / resolution[0]
             dy = (j - center_y) / resolution[1]
             distance = np.sqrt(dx**2 + dy**2) * 10
-            
+
             # Create crater profile
             if distance < crater_radius:
                 # Inside crater
@@ -151,17 +151,17 @@ def example_crater_gridmap():
                 # Crater rim and surroundings
                 rim_falloff = max(0, 1 - (distance - crater_radius))
                 h_mat[i, j] = rim_height * rim_falloff * 0.5
-    
+
     # Define the bounds of the gridmap (xmin, xmax, ymin, ymax)
     bound = (-5, 5, -5, 5)
-    
+
     # Generate the gridmap mesh
     gridmap_gen(bpy, "CraterGridmap", h_mat, bound)
-    
+
     print("Crater gridmap generated successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     example_sine_wave_gridmap()
     # example_checkerboard_gridmap()

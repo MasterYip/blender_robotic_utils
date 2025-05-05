@@ -41,7 +41,7 @@ def unregister():
     bpy.utils.unregister_class(OT_TestOpenFilebrowser)
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     register()
     # Immediately invoke the operator when run as a script
     bpy.ops.test.open_filebrowser('INVOKE_DEFAULT')
