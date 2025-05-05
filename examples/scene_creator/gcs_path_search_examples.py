@@ -80,7 +80,7 @@ def example_custom_gcs_scene():
     print("Custom GCS scene created successfully.")
 
 
-if __name__ == "__main__":
+if __name__ == "<run_path>":
     # Uncomment the example you want to run
     # example_basic_gcs_scene()
     example_custom_gcs_scene()
