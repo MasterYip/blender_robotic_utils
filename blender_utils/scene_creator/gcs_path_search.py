@@ -2,8 +2,8 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2024-03-11 11:28:58
 Description: file content
-FilePath: /blender_learning/blender_utils/scene_creator/gcs_path_search.py
-LastEditTime: 2024-03-11 12:57:48
+FilePath: /blender_utils/blender_utils/scene_creator/gcs_path_search.py
+LastEditTime: 2025-03-01 21:02:09
 LastEditors: MasterYip
 '''
 import bpy
@@ -83,9 +83,9 @@ class GCSPathSearch_Scene:
 
 if __name__ == "<run_path>":
 
-    points = [[-1.5, 0, 0], [0, 0, 1.5], [1.5, 0, 0.7]]
-    resolution = (40, 40)
-    bound = (-3, 3, -3, 3)
+    points = [[-20, 0, 0], [0, 0, 20], [20, 0, 0]]
+    resolution = (16, 16)
+    bound = (-30, 30, -30, 30)
 
     scene = GCSPathSearch_Scene(bpy)
     # scene.setup()

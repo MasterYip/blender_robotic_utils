@@ -18,14 +18,21 @@ Blender Robotic Utilities for modeling, animation, and rendering.
 Confined 2-layer terrain generation.
 ![terrain_gen](doc/terrain_gen/confined_2layer.png)
 
-
-## pkg blender_utils
+## Getting Started
 
 ### Installation
 
+Install VS code extension [Blender Development](https://marketplace.visualstudio.com/items/?itemName=JacquesLucke.blender-development) for easy development.
+
+Install the package using pip:
+
 ```bash
-pip install -e ./
+<blender_python_path> -m pip install -e ./
 ```
+
+### Examples
+
+
 
 ## Extensions
 
@@ -71,3 +78,8 @@ cd <blender_path>/<version>/python/bin/ # For example cd blender-3.1.2-linux-x64
 - Navigate to and select the `urdf_importer_addon.zip` file, then click `Install Add-on`.
 - Enable the add-on by checking the box next to `Import-Export: Import URDF Format`.
 - Verify the installation by opening `File` → `Import`. You should see `URDF (.urdf)` listed in the menu.
+
+## Acknowledgements
+
+- [Blender](https://www.blender.org/)
+- [urdf_importer](https://github.com/HoangGiang93/urdf_importer)
