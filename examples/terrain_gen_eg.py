@@ -376,15 +376,15 @@ def example_confined_terrain_surfaces():
     # Generate a confined terrain with surface modifications
     terrain_gen.generate_with_surface_modifications(
         name="ConfinedTerrainSurfaces",
-        size=(100, 100),
+        size=(50, 50),
         position=(0, 0, 0),
         layer_distance=2.0,
         ground_height=0.0,
         ceiling_height=2.0,
-        obstacle_count=2000,
+        obstacle_count=500,
         min_obstacle_size=(0.1, 0.1, 0.02),
-        max_obstacle_size=(5.0, 5.0, 0.7),
-        resolution=(1000, 1000)
+        max_obstacle_size=(5.0, 5.0, 1.0),
+        resolution=(500, 500)
     )
 
     # Adjust the camera for a better view
@@ -453,6 +453,8 @@ def example_complex_confined_environment():
 
 if __name__ == "<run_path>":
     # Uncomment the example you want to run
+
+    # === IsaacGym Style Terrain === #
     # example_flat_terrain()
     # example_stairs()
     # example_ramp()
@@ -461,6 +463,9 @@ if __name__ == "<run_path>":
     # example_legged_robot_test_course()
     # example_square_terrain_patches()
 
-    # example_confined_terrain_boxes()
-    example_confined_terrain_surfaces()
-    # example_complex_confined_environment()  # Run the complex confined environment example
+    # === Confined Environment === #
+    """ Boxes + Planes """
+    example_confined_terrain_boxes()
+    # example_complex_confined_environment()
+    """ Surfaces """
+    # example_confined_terrain_surfaces()

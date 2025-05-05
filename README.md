@@ -1,6 +1,6 @@
 ![banner](doc/banner_elspider.jpg)
 
-# Blender Utilities
+# Blender Robotics Utilities
 
 Blender Utilities for modeling, animation, and rendering.
 
