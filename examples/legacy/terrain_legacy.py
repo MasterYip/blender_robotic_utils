@@ -2,7 +2,7 @@
 Author: GitHub Copilot
 Date: 2025-04-19
 Description: Example demonstrating terrain generation for legged locomotion
-FilePath: /blender_utils/examples/terrain_gen_eg.py
+FilePath: /blender_utils/examples/legacy/terrain_legacy.py
 '''
 
 import os
@@ -465,7 +465,7 @@ if __name__ == "<run_path>":
 
     # === Confined Environment === #
     """ Boxes + Planes """
-    example_confined_terrain_boxes()
+    # example_confined_terrain_boxes()
     # example_complex_confined_environment()
     """ Surfaces """
-    # example_confined_terrain_surfaces()
+    example_confined_terrain_surfaces()

@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-01-29 14:54:03
+LastEditTime: 2025-05-06 09:00:27
 LastEditors: MasterYip
 '''
 
@@ -42,7 +42,7 @@ def read_csv_joint_states(filename):
             return times, [[math.degrees(float(i)) for i in row] for row in q]
         elif len(q[0]) == 24:
             # FIXME: Data unit conversion
-            return times, [[math.degrees(float(i)) if idx > 5 else float(i)*100 for idx, i in enumerate(row)] for row in q]
+            return times, [[math.degrees(float(i)) if idx > 5 else float(i) * 100 for idx, i in enumerate(row)] for row in q]
 
 
 def read_csv_swingtraj(filename):
@@ -51,7 +51,7 @@ def read_csv_swingtraj(filename):
         traj = list(reader)[1:]
         times = [float(row[0]) for row in traj]
         traj = [row[1:] for row in traj]
-        return times, [[float(i)*100 for i in row] for row in traj]
+        return times, [[float(i) * 100 for i in row] for row in traj]
 
 
 class RobotAnimatorConfig(dict):
@@ -151,7 +151,7 @@ class SwingTrajAnimator(object):
 
     def init_swing_traj(self):
         for i in range(len(self.traj[0]) // 3):
-            ctrl_points = [self.traj[0][3*i:3*(i+1)] for idx in range(self.traj_length)]
+            ctrl_points = [self.traj[0][3 * i:3 * (i + 1)] for idx in range(self.traj_length)]
             # print(ctrl_points)
             create_curve(ctrl_points, f"{self.trajname_prefix}_{i}", self.collection_name, bevel_depth=1.0)
 
@@ -171,7 +171,7 @@ class SwingTrajAnimator(object):
 
             frame = int(time * self.frame_rate)
             for i in range(len(self.traj[0]) // 3):
-                ctrl_points = [traj_buf[idx][3*i:3*(i+1)] for idx in range(self.traj_length)]
+                ctrl_points = [traj_buf[idx][3 * i:3 * (i + 1)] for idx in range(self.traj_length)]
                 curve = bpy.data.objects.get(f"{self.trajname_prefix}_{i}")
                 set_curve_keyframe(curve, ctrl_points, frame)
 
