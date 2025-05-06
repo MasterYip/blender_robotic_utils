@@ -4,6 +4,9 @@
 
 Blender Robotic Utilities for modeling, animation, and rendering.
 
+> [!NOTE]
+> This repo is still under development.
+
 ## Demos
 
 ### ElSpider Air Walking
