@@ -22,7 +22,7 @@ if parent_dir not in sys.path:
 
 import bpy
 import numpy as np
-from blender_utils.modeling.gridmap_gen import gridmap_gen
+from blender_utils.modeling.gridmap_gen import gridmap_gen, gridmap_gen_from_img
 
 
 def clear_scene():
@@ -161,8 +161,16 @@ def example_crater_gridmap():
     print("Crater gridmap generated successfully.")
 
 
+def example_image_gridmap():
+    gridmap_gen_from_img(bpy, "test_grid",
+                         os.path.join(ROOT_DIR, "terrain", "terrain_ground.png"),
+                         (0, 0), 0.5, (0, 3))
+    print("Gridmap generated from image successfully.")
+
+
 if __name__ == "<run_path>":
     # Uncomment the example you want to run
-    example_sine_wave_gridmap()
+    # example_sine_wave_gridmap()
     # example_checkerboard_gridmap()
     # example_crater_gridmap()
+    example_image_gridmap()
