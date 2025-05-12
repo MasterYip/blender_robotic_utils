@@ -3,7 +3,7 @@ Author: MasterYip 2205929492@qq.com
 Date: 2025-01-24 15:35:33
 Description: Animate robot in blender from recorded joint states
 FilePath: /blender_utils/blender_utils/animation/robot_animator.py
-LastEditTime: 2025-05-06 09:00:27
+LastEditTime: 2025-05-12 14:35:15
 LastEditors: MasterYip
 '''
 
@@ -73,10 +73,14 @@ class RobotAnimator(object):
         if self.armature is None or self.armature.type != 'ARMATURE':
             raise ValueError(f"未找到骨架对象 '{self.config['armature_name']}' 或对象类型不是骨架。")
 
-            # 获取骨架的动作数据
+        # 获取骨架的动作数据
+        # Ensure the armature has animation data
+        if not self.armature.animation_data:
+            self.armature.animation_data_create()
+        if not self.armature.animation_data.action:
+            self.armature.animation_data.action = bpy.data.actions.new(name=f"{self.armature.name}_Action")
+            print(f"Created new action for armature '{self.armature.name}'.")
         self.action = self.armature.animation_data.action
-        if self.action is None:
-            raise ValueError("骨架没有动作数据。")
 
         # 获取特定骨骼的姿势对象
         self.joints = []

@@ -174,7 +174,36 @@ class ProbabilisticRobotAnimator:
 
         # Create animator for this instance and apply the joint state
         animator = RobotAnimator(instance_config)
+
+        # Apply joint rotation directly to the armature's pose bones
         animator.set_joint_keyframe(1, joint_states)
+
+        # Make sure animation is updated in the viewport
+        bpy.context.view_layer.update()
+
+    def set_pose_keyframe(self, armature, pose, frame=1):
+        """
+        Apply pose (position and rotation) keyframes to the given armature
+
+        Args:
+            armature (bpy.types.Object): The armature to modify
+            pose (list): Pose values [x, y, z, roll, pitch, yaw]
+            frame (int): The frame to set the keyframe
+        """
+        # Ensure the armature has animation data
+        if not armature.animation_data:
+            armature.animation_data_create()
+
+        if not armature.animation_data.action:
+            armature.animation_data.action = bpy.data.actions.new(name=f"{armature.name}_Action")
+
+        # Apply the position and rotation
+        armature.location = pose[:3]
+        armature.rotation_euler = pose[3:]
+
+        # Set keyframes
+        armature.keyframe_insert(data_path="location", frame=frame)
+        armature.keyframe_insert(data_path="rotation_euler", frame=frame)
 
     def create_probabilistic_animation(self):
         """
@@ -192,17 +221,49 @@ class ProbabilisticRobotAnimator:
 
         # Get joint state for the frame to visualize if available
         target_joint_state = None
+        target_pose = None
+
         if hasattr(self, 'joint_states'):
             frame_idx = min(self.frame_to_visualize, len(self.joint_states) - 1)
-            target_joint_state = self.joint_states[frame_idx]
+
+            # Check if we have full pose+joint data (24 values) or just joint data (18 values)
+            if len(self.joint_states[frame_idx]) == 24:
+                # We have both pose and joint data
+                target_pose = self.joint_states[frame_idx][:6]
+                target_joint_state = self.joint_states[frame_idx][6:]
+            else:
+                # We only have joint data
+                target_joint_state = self.joint_states[frame_idx]
 
         # Create robot instances with increasing diffusion/transparency
         for i in range(self.num_instances):
             # Duplicate the robot
             robot_instance = self.duplicate_robot(i)
 
-            # Apply probabilistic variation
-            self.apply_probabilistic_variation(robot_instance, i)
+            # Apply probabilistic variation to position and rotation via set_pose_keyframe
+            # if we have target pose data
+            if target_pose:
+                # Create varied pose based on diffusion
+                varied_pose = []
+                variation_factor = (i + 1) / self.num_instances * self.diffusion_scale
+
+                # Position variation (x, y, z)
+                for j in range(3):
+                    # Add more variation to position (scaling by 3 to make it more visible)
+                    pos_var = random.uniform(-variation_factor * 3, variation_factor * 3)
+                    varied_pose.append(target_pose[j] + pos_var)
+
+                # Rotation variation (roll, pitch, yaw)
+                for j in range(3, 6):
+                    # Add rotation variation in radians
+                    rot_var = random.uniform(-variation_factor * 0.5, variation_factor * 0.5)
+                    varied_pose.append(target_pose[j] + rot_var)
+
+                # Apply the varied pose
+                self.set_pose_keyframe(robot_instance, varied_pose)
+            else:
+                # If no pose data, just apply random positional variation directly
+                self.apply_probabilistic_variation(robot_instance, i)
 
             # Apply transparency based on instance index
             self.apply_transparency(robot_instance, i)
@@ -278,13 +339,31 @@ if __name__ == "<run_path>":
     # Path to joint states file (optional)
     joint_states_file = os.path.join(ROOT_DIR, '..', '..', 'animation', 'elspider_air_walk', 'joint_states.csv')
 
-    # Create the probabilistic visualization
-    animator = create_probabilistic_robot_visualization(
-        config_file,
-        joint_states_file=joint_states_file,
-        num_instances=20,  # Number of robot instances
-        diffusion_scale=0.08,  # Scale factor for variations
-        frame=300  # Animation frame to visualize
-    )
+    num_frame = 50
+    delta_frame = 10
+    # diffusion_scales = [0.05 * i for i in range(1, num_frame)]  # Example diffusion scales
+    diffusion_scales = [0] * num_frame
+    diffusion_frames = [800 + delta_frame * i for i in range(1, num_frame)]  # Example frames
+    # diffusion_instances = [i for i in range(1, num_frame)]  # Example number of instances
+    diffusion_instances = [1] * num_frame
+
+    for scale, frame, instances in zip(diffusion_scales, diffusion_frames, diffusion_instances):
+        # Create the probabilistic robot visualization
+        animator = create_probabilistic_robot_visualization(
+            config_file,
+            joint_states_file=joint_states_file,
+            num_instances=instances,  # Number of robot instances
+            diffusion_scale=scale,  # Scale factor for variations
+            frame=frame  # Animation frame to visualize
+        )
+
+    # # Create the probabilistic visualization
+    # animator = create_probabilistic_robot_visualization(
+    #     config_file,
+    #     joint_states_file=joint_states_file,
+    #     num_instances=20,  # Number of robot instances
+    #     diffusion_scale=0.2,  # Scale factor for variations
+    #     frame=1600  # Animation frame to visualize
+    # )
 
     print("Probabilistic robot diffusion visualization created successfully!")
